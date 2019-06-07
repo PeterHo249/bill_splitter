@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'payment.g.dart';
@@ -9,12 +11,14 @@ class Payment {
   int memberCount;
   double tipRate;
   List<PayState> members;
+  DateTime date;
 
   Payment({
     @required this.cost,
     this.memberCount = 1,
     this.tipRate = 0.0,
     this.members,
+    this.date,
   }) {
     if (members == null) {
       members = [
@@ -25,15 +29,19 @@ class Payment {
         throw Exception("Invalid Argument");
       }
     }
+
+    date = date ?? DateTime.now();
   }
 
-  factory Payment.fromJson(Map<String, dynamic> json) => _$PaymentFromJson(json);
+  factory Payment.fromJson(Map<String, dynamic> json) =>
+      _$PaymentFromJson(json);
 
   Map<String, dynamic> toJson() => _$PaymentToJson(this);
 
   double get tipAmount => cost * tipRate;
   int get displayedTipRate => (tipRate * 100).floor();
-  
+  String get billDate => '${date.day}/${date.month}/${date.year}';
+
   void setTipRate(int rate) {
     if (rate < 0) {
       tipRate = 0.0;
@@ -61,7 +69,8 @@ class PayState {
     this.isPayBack = false,
   });
 
-  factory PayState.fromJson(Map<String, dynamic> json) => _$PayStateFromJson(json);
+  factory PayState.fromJson(Map<String, dynamic> json) =>
+      _$PayStateFromJson(json);
 
   Map<String, dynamic> toJson() => _$PayStateToJson(this);
 }

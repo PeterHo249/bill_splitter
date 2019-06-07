@@ -14,14 +14,17 @@ Payment _$PaymentFromJson(Map<String, dynamic> json) {
       members: (json['members'] as List)
           ?.map((e) =>
               e == null ? null : PayState.fromJson(e as Map<String, dynamic>))
-          ?.toList());
+          ?.toList(),
+      date:
+          json['date'] == null ? null : DateTime.parse(json['date'] as String));
 }
 
 Map<String, dynamic> _$PaymentToJson(Payment instance) => <String, dynamic>{
       'cost': instance.cost,
       'memberCount': instance.memberCount,
       'tipRate': instance.tipRate,
-      'members': instance.members
+      'members': instance.members,
+      'date': instance.date?.toIso8601String()
     };
 
 PayState _$PayStateFromJson(Map<String, dynamic> json) {
