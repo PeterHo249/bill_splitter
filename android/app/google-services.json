@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "906212831814",
+    "firebase_url": "https://bill-splitter-e712a.firebaseio.com",
+    "project_id": "bill-splitter-e712a",
+    "storage_bucket": "bill-splitter-e712a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:906212831814:android:716385be929970cc",
+        "android_client_info": {
+          "package_name": "com.hoxuandung.bill_splitter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "906212831814-sf0oj5c6btgoeg2i42a88o40ogcapnll.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOeWKMpgn0koyId5sOZ50Lowddhngo_Sk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "906212831814-sf0oj5c6btgoeg2i42a88o40ogcapnll.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
