@@ -1,4 +1,4 @@
-package com.example.bill_splitting
+package com.example.bill_splitter
 
 import android.os.Bundle
 
