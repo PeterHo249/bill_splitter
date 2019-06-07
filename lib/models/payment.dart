@@ -14,7 +14,7 @@ class Payment {
   DateTime date;
 
   Payment({
-    @required this.cost,
+    this.cost = 0,
     this.memberCount = 1,
     this.tipRate = 0.0,
     this.members,

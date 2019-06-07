@@ -22,6 +22,11 @@ class DatabaseService {
         );
   }
 
+  Stream<List<Payment>> getPaymentListStream() {
+    return _db.collection(udid).snapshots().map(
+          (snapshot) => _convertPaymentQueryDataToList(snapshot.documents),
+        );
+  }
   //****************** End read data section ******************
 
   //******************* Write data section ********************
@@ -41,4 +46,25 @@ class DatabaseService {
         .catchError((error) => print('=========> error: $error'));
   }
   //***************** End write data section ******************
+
+  //********************* Helper section **********************
+  List<Payment> _convertPaymentQueryDataToList(
+      List<DocumentSnapshot> documents) {
+    var result = List<Payment>();
+
+    for (var document in documents) {
+      if (document.documentID != 'trips') {
+        result.add(
+          Payment.fromJson(
+            json.decode(
+              json.encode(document.data),
+            ),
+          ),
+        );
+      }
+    }
+
+    return result;
+  }
+  //******************* End helper section ********************
 }
