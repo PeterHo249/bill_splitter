@@ -1,3 +1,4 @@
+import 'package:bill_splitter/widgets/bill_add_form.dart';
 import 'package:bill_splitter/widgets/bill_list.dart';
 import 'package:bill_splitter/widgets/trip_list.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +90,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   void addBill() {
-    print('add bill');
+    Navigator.push(
+      this.context,
+      MaterialPageRoute(
+        builder: (context) => AddingBillForm(),
+      ),
+    );
   }
 
   void addTrip() {

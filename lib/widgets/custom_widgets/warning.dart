@@ -21,7 +21,7 @@ class Warning extends StatelessWidget {
         children: <Widget>[
           Icon(
             icon,
-            size: 30.0,
+            size: 60.0,
             color: Colors.blueGrey,
           ),
           Padding(

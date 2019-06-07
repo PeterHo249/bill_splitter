@@ -3,20 +3,29 @@ import 'package:bill_splitter/models/payment.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class BillAddForm extends StatelessWidget {
-  const BillAddForm({Key key}) : super(key: key);
+class AddingBillForm extends StatelessWidget {
+  const AddingBillForm({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<PaymentNotifier>(
       builder: (context) => PaymentNotifier(Payment()),
-      child: BillAddFormBody(),
+      child: Scaffold(
+        appBar: _buildAppBar(context),
+        body: AddingBillFormBody(),
+      ),
+    );
+  }
+
+  Widget _buildAppBar(BuildContext context) {
+    return AppBar(
+      title: Text('Add new bill'),
     );
   }
 }
 
-class BillAddFormBody extends StatelessWidget {
-  const BillAddFormBody({Key key}) : super(key: key);
+class AddingBillFormBody extends StatelessWidget {
+  const AddingBillFormBody({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
