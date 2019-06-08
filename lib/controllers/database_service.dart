@@ -52,10 +52,10 @@ class DatabaseService {
     return docPath;
   }
 
-  deletePayment(String docId) async {
+  deletePayment(String docPath) async {
     var batch = _db.batch();
 
-    var docRef = _db.collection(udid).document(docId);
+    var docRef = _db.document(docPath);
     batch.delete(docRef);
 
     await batch
@@ -83,6 +83,8 @@ class DatabaseService {
         );
       }
     }
+
+    result.sort((a, b) => b.data.date.compareTo(a.data.date));
 
     return result;
   }

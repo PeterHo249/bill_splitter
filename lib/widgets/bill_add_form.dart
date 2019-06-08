@@ -1,6 +1,7 @@
 import 'package:bill_splitter/controllers/database_service.dart';
 import 'package:bill_splitter/controllers/payment_notifier.dart';
 import 'package:bill_splitter/models/payment.dart';
+import 'package:bill_splitter/widgets/bill_detail.dart';
 import 'package:bill_splitter/widgets/custom_widgets/amount_picker.dart';
 import 'package:bill_splitter/widgets/custom_widgets/member_tile.dart';
 import 'package:flutter/material.dart';
@@ -206,14 +207,21 @@ class _AddingBillFormBodyState extends State<AddingBillFormBody> {
     );
   }
 
-  void onSavePressed() {
+  void onSavePressed() async {
     final form = _formKey.currentState;
 
     if (form.validate()) {
-      DatabaseService.instance.writePayment(
+      var docPath = await DatabaseService.instance.writePayment(
         Provider.of<PaymentNotifier>(context).bill,
       );
-      Navigator.pop(context);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BillDetail(
+                billPath: docPath,
+              ),
+        ),
+      );
     } else {
       setState(() {
         autoValidate = true;
