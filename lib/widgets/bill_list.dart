@@ -9,7 +9,7 @@ class BillList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<List<Payment>>.value(
+    return StreamProvider<List<PaymentDocument>>.value(
       stream: DatabaseService.instance.getPaymentListStream(),
       child: Container(
         child: BillListBody(),
@@ -23,19 +23,19 @@ class BillListBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var bills = Provider.of<List<Payment>>(context);
+    var billDocuments = Provider.of<List<PaymentDocument>>(context);
 
-    if (bills == null || bills.length == 0) {
+    if (billDocuments == null || billDocuments.length == 0) {
       return Warning(
         icon: Icons.mood_bad,
         message: 'Opps! No bill to show.',
       );
     }
     return ListView.builder(
-      itemCount: bills.length,
+      itemCount: billDocuments.length,
       itemBuilder: (context, index) {
         return BillListCell(
-          bill: bills[index],
+          billDocument: billDocuments[index],
         );
       },
     );
@@ -43,17 +43,17 @@ class BillListBody extends StatelessWidget {
 }
 
 class BillListCell extends StatelessWidget {
-  final Payment bill;
+  final PaymentDocument billDocument;
   const BillListCell({
     Key key,
-    this.bill,
+    this.billDocument,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Text(
-        bill.totalCost.toString(),
+        billDocument.data.totalCost.toString(),
       ),
     );
   }

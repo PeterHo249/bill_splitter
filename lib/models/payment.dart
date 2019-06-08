@@ -74,3 +74,10 @@ class PayState {
 
   Map<String, dynamic> toJson() => _$PayStateToJson(this);
 }
+
+class PaymentDocument {
+  final String path;
+  final Payment data;
+
+  PaymentDocument({this.path, this.data});
+}

@@ -12,17 +12,20 @@ class DatabaseService {
   static DatabaseService get instance => _singleton;
 
   //******************* Read data section ********************
-  Stream<Payment> getPaymentStream(String docId) {
-    return _db.collection(udid).document(docId).snapshots().map(
-          (snapshot) => Payment.fromJson(
-                json.decode(
-                  json.encode(snapshot.data),
+  Stream<PaymentDocument> getPaymentStream(String docPath) {
+    return _db.document(docPath).snapshots().map(
+          (snapshot) => PaymentDocument(
+                path: snapshot.reference.path,
+                data: Payment.fromJson(
+                  json.decode(
+                    json.encode(snapshot.data),
+                  ),
                 ),
               ),
         );
   }
 
-  Stream<List<Payment>> getPaymentListStream() {
+  Stream<List<PaymentDocument>> getPaymentListStream() {
     return _db.collection(udid).snapshots().map(
           (snapshot) => _convertPaymentQueryDataToList(snapshot.documents),
         );
@@ -30,10 +33,11 @@ class DatabaseService {
   //****************** End read data section ******************
 
   //******************* Write data section ********************
-  writePayment(Payment payment, {String docId}) async {
+  Future<String> writePayment(Payment payment, {String docId}) async {
     var batch = _db.batch();
 
     DocumentReference docRef = _db.collection(udid).document(docId ?? null);
+    String docPath = docRef.path;
     batch.setData(
       docRef,
       json.decode(
@@ -44,20 +48,36 @@ class DatabaseService {
     await batch
         .commit()
         .catchError((error) => print('=========> error: $error'));
+
+    return docPath;
+  }
+
+  deletePayment(String docId) async {
+    var batch = _db.batch();
+
+    var docRef = _db.collection(udid).document(docId);
+    batch.delete(docRef);
+
+    await batch
+        .commit()
+        .catchError((error) => print('=========> error: $error'));
   }
   //***************** End write data section ******************
 
   //********************* Helper section **********************
-  List<Payment> _convertPaymentQueryDataToList(
+  List<PaymentDocument> _convertPaymentQueryDataToList(
       List<DocumentSnapshot> documents) {
-    var result = List<Payment>();
+    var result = List<PaymentDocument>();
 
     for (var document in documents) {
       if (document.documentID != 'trips') {
         result.add(
-          Payment.fromJson(
-            json.decode(
-              json.encode(document.data),
+          PaymentDocument(
+            path: document.reference.path,
+            data: Payment.fromJson(
+              json.decode(
+                json.encode(document.data),
+              ),
             ),
           ),
         );
