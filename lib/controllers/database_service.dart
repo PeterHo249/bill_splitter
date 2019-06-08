@@ -33,7 +33,7 @@ class DatabaseService {
   writePayment(Payment payment, {String docId}) async {
     var batch = _db.batch();
 
-    DocumentReference docRef = _db.collection(udid).document(docId ?? "");
+    DocumentReference docRef = _db.collection(udid).document(docId ?? null);
     batch.setData(
       docRef,
       json.decode(

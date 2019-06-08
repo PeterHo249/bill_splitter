@@ -53,7 +53,7 @@ class BillListCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Text(
-        bill.cost.toString(),
+        bill.totalCost.toString(),
       ),
     );
   }

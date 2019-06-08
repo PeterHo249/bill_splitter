@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 List<Color> billIndicatorBackgroundColors = <Color>[
@@ -8,5 +10,9 @@ List<Color> billIndicatorBackgroundColors = <Color>[
   Colors.blue[400],
   Colors.indigo[400],
 ];
+
+Color getRandomColor() => billIndicatorBackgroundColors[Random().nextInt(
+      billIndicatorBackgroundColors.length,
+    )];
 
 var billIndicatorIcon = Icons.attach_money;

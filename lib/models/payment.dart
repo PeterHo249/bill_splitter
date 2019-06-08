@@ -4,6 +4,7 @@ part 'payment.g.dart';
 
 @JsonSerializable()
 class Payment {
+  String title;
   double cost;
   int memberCount;
   double tipRate;
@@ -11,9 +12,10 @@ class Payment {
   DateTime date;
 
   Payment({
+    this.title,
     this.cost = 0,
     this.memberCount = 1,
-    this.tipRate = 0.0,
+    this.tipRate = 0.1,
     this.members,
     this.date,
   }) {
@@ -28,6 +30,7 @@ class Payment {
     }
 
     date = date ?? DateTime.now();
+    title = title ?? 'Bill at $billDate';
   }
 
   factory Payment.fromJson(Map<String, dynamic> json) =>
@@ -38,6 +41,8 @@ class Payment {
   double get tipAmount => cost * tipRate;
   int get displayedTipRate => (tipRate * 100).floor();
   String get billDate => '${date.day}/${date.month}/${date.year}';
+  double get totalCost => cost * (1.0 + tipRate);
+  double get paymentPartCost => totalCost / memberCount;
 
   void setTipRate(int rate) {
     if (rate < 0) {
@@ -52,8 +57,6 @@ class Payment {
 
     tipRate = rate / 100;
   }
-
-  double get paymentPartCost => (cost * (1 + tipRate)) / memberCount;
 }
 
 @JsonSerializable()

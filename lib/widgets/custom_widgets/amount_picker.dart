@@ -2,23 +2,29 @@ import 'package:flutter/material.dart';
 
 class AmountPicker extends StatefulWidget {
   final int initialValue;
-  final ValueChanged onValueChanged;
+  final ValueChanged<int> onAddButtonPressed;
+  final ValueChanged<int> onRemoveButtonPressed;
   final double buttonWidth;
-  final double valueWidth;
+  final double width;
   final double iconSize;
   Color backgroundColor;
   Color foregroundColor;
+  int minValue;
+  int maxValue;
 
   AmountPicker({
     Key key,
     this.initialValue = 1,
-    @required this.onValueChanged,
+    @required this.onAddButtonPressed,
+    @required this.onRemoveButtonPressed,
     this.backgroundColor,
     this.foregroundColor,
     this.buttonWidth = 30.0,
-    this.valueWidth = 50.0,
+    this.width = 100.0,
     this.iconSize = 25.0,
-  })  : assert(initialValue >= 1),
+    this.maxValue,
+    this.minValue = 1,
+  })  : assert(initialValue >= minValue),
         super(key: key) {
     backgroundColor = backgroundColor ?? Colors.blue[100];
     foregroundColor = foregroundColor ?? Colors.blue;
@@ -37,15 +43,15 @@ class _AmountPickerState extends State<AmountPicker> {
   @override
   void initState() {
     super.initState();
-    value = widget.initialValue;
     _buttonWidth = widget.buttonWidth;
-    _valueWidth = widget.valueWidth;
-    _totalWidth = 2 * _buttonWidth + _valueWidth;
+    _valueWidth = widget.width - 2 * _buttonWidth;
+    _totalWidth = widget.width;
     _height = _buttonWidth;
   }
 
   @override
   Widget build(BuildContext context) {
+    value = widget.initialValue;
     return Container(
       width: _totalWidth,
       height: _height,
@@ -56,11 +62,11 @@ class _AmountPickerState extends State<AmountPicker> {
         children: <Widget>[
           InkWell(
             onTap: () {
-              if (value > 1) {
+              if (value > widget.minValue) {
                 setState(() {
                   value--;
                 });
-                widget.onValueChanged(value);
+                widget.onRemoveButtonPressed(value);
               }
             },
             child: Container(
@@ -93,10 +99,13 @@ class _AmountPickerState extends State<AmountPicker> {
           ),
           InkWell(
             onTap: () {
+              if (widget.maxValue != null && value == widget.maxValue) {
+                return;
+              }
               setState(() {
                 value++;
               });
-              widget.onValueChanged(value);
+              widget.onAddButtonPressed(value);
             },
             child: Container(
               width: _buttonWidth,
