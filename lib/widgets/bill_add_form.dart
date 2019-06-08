@@ -4,6 +4,7 @@ import 'package:bill_splitter/models/payment.dart';
 import 'package:bill_splitter/widgets/bill_detail.dart';
 import 'package:bill_splitter/widgets/custom_widgets/amount_picker.dart';
 import 'package:bill_splitter/widgets/custom_widgets/member_tile.dart';
+import 'package:bill_splitter/widgets/text_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,6 +32,7 @@ class _AddingBillFormBodyState extends State<AddingBillFormBody> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController titleController;
   TextEditingController costController;
+  PaymentNotifier billNotifier;
 
   @override
   void initState() {
@@ -49,7 +51,7 @@ class _AddingBillFormBodyState extends State<AddingBillFormBody> {
 
   @override
   Widget build(BuildContext context) {
-    final billNotifier = Provider.of<PaymentNotifier>(context);
+    billNotifier = Provider.of<PaymentNotifier>(context);
     return Scaffold(
       appBar: _buildAppBar(context),
       body: _buildBody(context, billNotifier),
@@ -229,7 +231,18 @@ class _AddingBillFormBodyState extends State<AddingBillFormBody> {
     }
   }
 
-  void onCameraPressed() {
-    print('on camera pressed');
+  void onCameraPressed() async {
+    final cost = await Navigator.push<double>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TextScanner(),
+      ),
+    );
+    if (cost == null) {
+      return;
+    }
+
+    print(cost);
+    billNotifier.setCost(cost);
   }
 }
