@@ -136,7 +136,7 @@ class BillListCell extends StatelessWidget {
                   IconWithTextRow(
                     icon: Icons.timelapse,
                     iconColor: Colors.green,
-                    text: '${billDocument.data.displayedTipRate}%',
+                    text: '${billDocument.data.paymentPartCost}/person',
                   ),
                 ],
               ),

@@ -4,6 +4,7 @@ class AmountPicker extends StatefulWidget {
   final int initialValue;
   final ValueChanged<int> onAddButtonPressed;
   final ValueChanged<int> onRemoveButtonPressed;
+  final ValueChanged<int> onInputChanged;
   final double buttonWidth;
   final double width;
   final double iconSize;
@@ -24,6 +25,7 @@ class AmountPicker extends StatefulWidget {
     this.iconSize = 25.0,
     this.maxValue,
     this.minValue = 1,
+    this.onInputChanged,
   })  : assert(initialValue >= minValue),
         super(key: key) {
     backgroundColor = backgroundColor ?? Colors.blue[100];
@@ -39,6 +41,7 @@ class _AmountPickerState extends State<AmountPicker> {
   double _valueWidth;
   double _totalWidth;
   double _height;
+  TextEditingController valueController;
 
   @override
   void initState() {
@@ -47,11 +50,13 @@ class _AmountPickerState extends State<AmountPicker> {
     _valueWidth = widget.width - 2 * _buttonWidth;
     _totalWidth = widget.width;
     _height = _buttonWidth;
+    valueController = TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
     value = widget.initialValue;
+    valueController.text = value.toString();
     return Container(
       width: _totalWidth,
       height: _height,
@@ -65,6 +70,7 @@ class _AmountPickerState extends State<AmountPicker> {
               if (value > widget.minValue) {
                 setState(() {
                   value--;
+                  valueController.text = value.toString();
                 });
                 widget.onRemoveButtonPressed(value);
               }
@@ -88,8 +94,23 @@ class _AmountPickerState extends State<AmountPicker> {
           Container(
             width: _valueWidth,
             child: Center(
-              child: Text(
-                value.toString(),
+              child: TextField(
+                controller: valueController,
+                enabled: widget.onInputChanged == null ? false : true,
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  var amount = int.tryParse(value) ?? widget.minValue;
+                  if (amount < widget.minValue) {
+                    amount = widget.minValue;
+                  }
+                  if (amount > widget.maxValue) {
+                    amount = widget.maxValue;
+                  }
+                  setState(() {
+                    valueController.text = amount.toString();
+                  });
+                  widget.onInputChanged(amount);
+                },
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
@@ -104,6 +125,7 @@ class _AmountPickerState extends State<AmountPicker> {
               }
               setState(() {
                 value++;
+                valueController.text = value.toString();
               });
               widget.onAddButtonPressed(value);
             },

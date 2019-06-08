@@ -140,6 +140,7 @@ class _AddingBillFormBodyState extends State<AddingBillFormBody> {
                 onAddButtonPressed: (value) => billNotifier.setTipRate(value),
                 onRemoveButtonPressed: (value) =>
                     billNotifier.setTipRate(value),
+                onInputChanged: (value) => billNotifier.setTipRate(value),
                 initialValue: bill.displayedTipRate,
                 minValue: 0,
                 maxValue: 100,
