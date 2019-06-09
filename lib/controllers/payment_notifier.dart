@@ -18,7 +18,7 @@ class PaymentNotifier with ChangeNotifier {
 
   void setCost(double value) {
     _payment.cost = value;
-    //notifyListeners();
+    notifyListeners();
   }
 
   void addMember() {

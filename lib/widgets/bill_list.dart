@@ -55,6 +55,7 @@ class BillListCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final SlidableController slidableController = SlidableController();
+    final Color randomBackgroundColor = getRandomColor();
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -62,6 +63,7 @@ class BillListCell extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => BillDetail(
                   billPath: billDocument.path,
+                  appBarBackgroundColor: randomBackgroundColor,
                 ),
           ),
         );
@@ -101,7 +103,7 @@ class BillListCell extends StatelessWidget {
           children: <Widget>[
             ListTile(
               leading: CircleAvatar(
-                backgroundColor: getRandomColor(),
+                backgroundColor: randomBackgroundColor,
                 child: Icon(
                   Icons.assignment,
                   color: Colors.white,
@@ -118,10 +120,8 @@ class BillListCell extends StatelessWidget {
                   ),
                 ),
               ),
-              subtitle: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
+              subtitle: Wrap(
+                alignment: WrapAlignment.spaceBetween,
                 children: <Widget>[
                   IconWithTextRow(
                     icon: Icons.attach_money,

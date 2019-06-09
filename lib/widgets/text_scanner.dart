@@ -18,10 +18,11 @@ class _TextScannerState extends State<TextScanner> {
     return Scaffold(
       body: SafeArea(
         child: Stack(
-          alignment: AlignmentDirectional.bottomCenter,
           children: <Widget>[
             Container(
               width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height -
+                  MediaQuery.of(context).padding.top,
               child: CameraMlVision<VisionText>(
                 detector: FirebaseVision.instance.textRecognizer().processImage,
                 onResult: (VisionText text) {
@@ -29,17 +30,35 @@ class _TextScannerState extends State<TextScanner> {
                 },
               ),
             ),
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).pop<double>(
-                  getTotalCostFromVisionText(scanResult),
-                );
-              },
-              icon: Icon(
-                Icons.radio_button_checked,
+            Positioned(
+              left: 10.0,
+              top: 10.0,
+              child: IconButton(
+                icon: Icon(Icons.arrow_back),
+                color: Colors.white,
+                iconSize: 30.0,
+                onPressed: () {
+                  Navigator.of(context).pop<double>(
+                    0.0,
+                  );
+                },
               ),
-              color: Colors.white,
-              iconSize: 30.0,
+            ),
+            Positioned(
+              bottom: 30.0,
+              width: MediaQuery.of(context).size.width,
+              child: IconButton(
+                onPressed: () {
+                  Navigator.of(context).pop<double>(
+                    getTotalCostFromVisionText(scanResult),
+                  );
+                },
+                icon: Icon(
+                  Icons.radio_button_checked,
+                ),
+                color: Colors.white,
+                iconSize: 100.0,
+              ),
             ),
           ],
         ),

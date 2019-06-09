@@ -30,7 +30,6 @@ class AddingBillFormBody extends StatefulWidget {
 class _AddingBillFormBodyState extends State<AddingBillFormBody> {
   bool autoValidate;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController titleController;
   TextEditingController costController;
   PaymentNotifier billNotifier;
 
@@ -38,13 +37,11 @@ class _AddingBillFormBodyState extends State<AddingBillFormBody> {
   void initState() {
     super.initState();
     autoValidate = false;
-    titleController = TextEditingController();
     costController = TextEditingController();
   }
 
   @override
   void dispose() {
-    titleController.dispose();
     costController.dispose();
     super.dispose();
   }
@@ -76,8 +73,9 @@ class _AddingBillFormBodyState extends State<AddingBillFormBody> {
 
   Widget _buildBody(BuildContext context, PaymentNotifier billNotifier) {
     final bill = billNotifier.bill;
-    titleController.text = bill.title;
-    costController.text = bill.cost.toString();
+    if (costController.text == null || costController.text.isEmpty) {
+      costController.text = bill.cost.toString();
+    }
 
     return SingleChildScrollView(
       child: Form(
@@ -91,7 +89,7 @@ class _AddingBillFormBodyState extends State<AddingBillFormBody> {
             _buildFormRow(
               title: 'Title:',
               control: TextFormField(
-                controller: titleController,
+                initialValue: bill.title,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Title is required.';
@@ -242,8 +240,9 @@ class _AddingBillFormBodyState extends State<AddingBillFormBody> {
     if (cost == null) {
       return;
     }
-
-    print(cost);
+    setState(() {
+      costController.text = cost.toString();
+    });
     billNotifier.setCost(cost);
   }
 }

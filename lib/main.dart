@@ -2,6 +2,7 @@ import 'package:bill_splitter/controllers/database_service.dart';
 import 'package:bill_splitter/utils/constants/theme.dart';
 import 'package:bill_splitter/widgets/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 
 
@@ -12,6 +13,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return FutureBuilder<String>(
       future: getUDId,
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {

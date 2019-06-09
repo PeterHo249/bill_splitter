@@ -51,12 +51,12 @@ class _AmountPickerState extends State<AmountPicker> {
     _totalWidth = widget.width;
     _height = _buttonWidth;
     valueController = TextEditingController();
+    value = widget.initialValue;
+    valueController.text = value.toString();
   }
 
   @override
   Widget build(BuildContext context) {
-    value = widget.initialValue;
-    valueController.text = value.toString();
     return Container(
       width: _totalWidth,
       height: _height,
@@ -94,11 +94,25 @@ class _AmountPickerState extends State<AmountPicker> {
           Container(
             width: _valueWidth,
             child: Center(
-              child: TextField(
+              child: TextFormField(
                 controller: valueController,
+                textAlign: TextAlign.center,
                 enabled: widget.onInputChanged == null ? false : true,
                 keyboardType: TextInputType.number,
-                onChanged: (value) {
+                onFieldSubmitted: (value) {
+                  var amount = int.tryParse(value) ?? widget.minValue;
+                  if (amount < widget.minValue) {
+                    amount = widget.minValue;
+                  }
+                  if (amount > widget.maxValue) {
+                    amount = widget.maxValue;
+                  }
+                  setState(() {
+                    valueController.text = amount.toString();
+                  });
+                  widget.onInputChanged(amount);
+                },
+                onSaved: (value) {
                   var amount = int.tryParse(value) ?? widget.minValue;
                   if (amount < widget.minValue) {
                     amount = widget.minValue;

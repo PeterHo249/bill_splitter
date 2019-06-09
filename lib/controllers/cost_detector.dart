@@ -11,7 +11,7 @@ List<TextBlock> filterNumberBlocks(VisionText text) {
   var blocks = text.blocks;
   var numberBlocks = List<TextBlock>();
   var regex = RegExp(
-    r"((\d{1,3},)*\d+)(\.(\d+))*",
+    r"^((\d{1,3},)*\d+)(\.(\d+))*$",
     caseSensitive: false,
   );
 
@@ -29,21 +29,31 @@ List<TextBlock> filterNumberBlocks(VisionText text) {
 }
 
 double getTotalCost(List<TextBlock> numberBlocks) {
+  print('=========================================================');
+  print('Number block count:');
+  print(numberBlocks.length);
+  print('=========================================================');
   if (numberBlocks.isEmpty) {
     return 0.0;
   }
 
   var largestBlock = numberBlocks[0];
 
+  print('=========================================================');
+  print('Number block text:');
+  print(largestBlock.text);
   for (int i = 1; i < numberBlocks.length; i++) {
+    print(numberBlocks[i].text);
     if (largestBlock.boundingBox.height < numberBlocks[i].boundingBox.height) {
       largestBlock = numberBlocks[i];
     }
   }
+  print('=========================================================');
 
   var numberString = largestBlock.text;
-  numberString.replaceAll(groupSeparator, "");
-  numberString.replaceAll(decimalSeparator, ".");
+  numberString = numberString.replaceAll(groupSeparator, "");
+  numberString = numberString.replaceAll(decimalSeparator, ".");
+  print(numberString);
 
   return double.tryParse(numberString) ?? 0.0;
 }
