@@ -9,6 +9,10 @@ List<Color> billIndicatorBackgroundColors = <Color>[
   Colors.deepOrange[400],
   Colors.blue[400],
   Colors.indigo[400],
+  Colors.purple[400],
+  Colors.amber[400],
+  Colors.lime[400],
+  Colors.teal[400],
 ];
 
 Color getRandomColor() => billIndicatorBackgroundColors[Random().nextInt(
