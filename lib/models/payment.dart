@@ -57,6 +57,15 @@ class Payment {
 
     tipRate = rate / 100;
   }
+
+  bool changePaymentStateOfMember(int index) {
+    if (index == 0) {
+      return false;
+    } else {
+      members[index].changeState();
+      return true;
+    }
+  }
 }
 
 @JsonSerializable()
@@ -73,6 +82,10 @@ class PayState {
       _$PayStateFromJson(json);
 
   Map<String, dynamic> toJson() => _$PayStateToJson(this);
+
+  void changeState() {
+    isPayBack = !isPayBack;
+  }
 }
 
 class PaymentDocument {

@@ -113,17 +113,21 @@ class _AmountPickerState extends State<AmountPicker> {
                   widget.onInputChanged(amount);
                 },
                 onSaved: (value) {
-                  var amount = int.tryParse(value) ?? widget.minValue;
-                  if (amount < widget.minValue) {
-                    amount = widget.minValue;
+                  if (widget.onInputChanged != null) {
+                    var amount = int.tryParse(value) ?? widget.minValue;
+                    if (amount < widget.minValue) {
+                      amount = widget.minValue;
+                    }
+                    if (widget.maxValue != null) {
+                      if (amount > widget.maxValue) {
+                        amount = widget.maxValue;
+                      }
+                    }
+                    setState(() {
+                      valueController.text = amount.toString();
+                    });
+                    widget.onInputChanged(amount);
                   }
-                  if (amount > widget.maxValue) {
-                    amount = widget.maxValue;
-                  }
-                  setState(() {
-                    valueController.text = amount.toString();
-                  });
-                  widget.onInputChanged(amount);
                 },
                 style: TextStyle(
                   fontSize: 20.0,

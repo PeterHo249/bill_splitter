@@ -33,11 +33,43 @@ class DatabaseService {
   //****************** End read data section ******************
 
   //******************* Write data section ********************
-  Future<String> writePayment(Payment payment, {String docId}) async {
+  Future<String> writePayment(
+    Payment payment, {
+    String docId,
+    String docPath,
+    bool isSingle = true,
+  }) async {
     var batch = _db.batch();
 
-    DocumentReference docRef = _db.collection(udid).document(docId ?? null);
-    String docPath = docRef.path;
+    DocumentReference docRef;
+
+    if (docPath != null) {
+      docRef = _db.document(docPath);
+    } else {
+      if (docId == null) {
+        if (isSingle) {
+          docRef = _db.collection(udid).document();
+        } else {
+          docRef = _db
+              .collection(udid)
+              .document('trips')
+              .collection('trips')
+              .document();
+        }
+      } else {
+        if (isSingle) {
+          docRef = _db.collection(udid).document(docId);
+        } else {
+          docRef = _db
+              .collection(udid)
+              .document('trips')
+              .collection('trips')
+              .document(docId);
+        }
+      }
+    }
+
+    String newDocPath = docRef.path;
     batch.setData(
       docRef,
       json.decode(
@@ -49,7 +81,7 @@ class DatabaseService {
         .commit()
         .catchError((error) => print('=========> error: $error'));
 
-    return docPath;
+    return newDocPath;
   }
 
   deletePayment(String docPath) async {
@@ -61,6 +93,14 @@ class DatabaseService {
     await batch
         .commit()
         .catchError((error) => print('=========> error: $error'));
+  }
+
+  changePaymentState(int index, PaymentDocument billDocument) {
+    var isNeedUpdate = billDocument.data.changePaymentStateOfMember(index);
+
+    if (isNeedUpdate) {
+      writePayment(billDocument.data, docPath: billDocument.path);
+    }
   }
   //***************** End write data section ******************
 

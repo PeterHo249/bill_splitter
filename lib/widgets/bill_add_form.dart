@@ -212,6 +212,7 @@ class _AddingBillFormBodyState extends State<AddingBillFormBody> {
     final form = _formKey.currentState;
 
     if (form.validate()) {
+      form.save();
       var docPath = await DatabaseService.instance.writePayment(
         Provider.of<PaymentNotifier>(context).bill,
       );

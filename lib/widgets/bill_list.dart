@@ -126,7 +126,7 @@ class BillListCell extends StatelessWidget {
                   IconWithTextRow(
                     icon: Icons.attach_money,
                     iconColor: Colors.red,
-                    text: billDocument.data.totalCost.toString(),
+                    text: billDocument.data.totalCost.toStringAsFixed(2),
                   ),
                   IconWithTextRow(
                     icon: Icons.people,
@@ -136,7 +136,7 @@ class BillListCell extends StatelessWidget {
                   IconWithTextRow(
                     icon: Icons.timelapse,
                     iconColor: Colors.green,
-                    text: '${billDocument.data.paymentPartCost}/person',
+                    text: '${billDocument.data.paymentPartCost.toStringAsFixed(2)}/person',
                   ),
                 ],
               ),

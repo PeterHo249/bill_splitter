@@ -56,7 +56,7 @@ class BillDetailBody extends StatelessWidget {
             image: DecorationImage(
               image: AssetImage('assets/img/receipt_background.png'),
               colorFilter: ColorFilter.mode(
-                Colors.white.withOpacity(0.3),
+                Colors.white.withOpacity(0.5),
                 BlendMode.dstATop,
               ),
               fit: BoxFit.fill,
@@ -108,7 +108,7 @@ class BillDetailBody extends StatelessWidget {
             ),
           ),
           rightChild: Text(
-            '${bill.cost}',
+            '${bill.cost.toStringAsFixed(2)}',
             style: TextStyle(
               fontSize: 20.0,
             ),
@@ -139,7 +139,7 @@ class BillDetailBody extends StatelessWidget {
             ),
           ),
           rightChild: Text(
-            '${bill.totalCost}',
+            '${bill.totalCost.toStringAsFixed(2)}',
             style: TextStyle(
               fontSize: 35.0,
             ),
@@ -170,7 +170,7 @@ class BillDetailBody extends StatelessWidget {
             ),
           ),
           rightChild: Text(
-            '${bill.paymentPartCost}',
+            '${bill.paymentPartCost.toStringAsFixed(2)}',
             style: TextStyle(
               fontSize: 25.0,
             ),
@@ -196,7 +196,6 @@ class BillDetailBody extends StatelessWidget {
             physics: BouncingScrollPhysics(),
             itemBuilder: (context, index) => MemberTilePortrait(
                   index: index,
-                  billDocument: billDocument,
                 ),
           ),
         ),
@@ -230,22 +229,24 @@ class BillDetailBody extends StatelessWidget {
 }
 
 class MemberTilePortrait extends StatelessWidget {
-  final PaymentDocument billDocument;
   final int index;
-  const MemberTilePortrait({
+  MemberTilePortrait({
     Key key,
     this.index,
-    this.billDocument,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final billDocument = Provider.of<PaymentDocument>(context);
     return Row(
       children: <Widget>[
         Container(
           height: 200.0,
           width: 150.0,
-          child: _buildContent(context, billDocument.data.members[index]),
+          child: _buildContent(
+            context,
+            billDocument,
+          ),
         ),
         VerticalDivider(
           color: Colors.blueGrey,
@@ -254,7 +255,11 @@ class MemberTilePortrait extends StatelessWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, PayState member) {
+  Widget _buildContent(
+    BuildContext context,
+    PaymentDocument billDocument,
+  ) {
+    PayState member = billDocument.data.members[index];
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -295,7 +300,9 @@ class MemberTilePortrait extends StatelessWidget {
               width: 30.0,
               height: 30.0,
               child: InkWell(
-                onTap: onStateButtonPressed,
+                onTap: () {
+                  onStateButtonPressed(index, billDocument);
+                },
                 child: CircleAvatar(
                   backgroundColor: member.isPayBack ? Colors.green : Colors.red,
                   child: Icon(
@@ -311,7 +318,7 @@ class MemberTilePortrait extends StatelessWidget {
     );
   }
 
-  void onStateButtonPressed() {
-    print('state press');
+  void onStateButtonPressed(int index, PaymentDocument billDocument) {
+    DatabaseService.instance.changePaymentState(index, billDocument);
   }
 }
