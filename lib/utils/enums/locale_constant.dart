@@ -1,0 +1,2 @@
+var groupSeparator = ",";
+var decimalSeparator = ".";

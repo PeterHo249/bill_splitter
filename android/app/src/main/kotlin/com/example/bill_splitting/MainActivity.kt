@@ -1,4 +1,4 @@
-package com.example.bill_splitting
+package com.hoxuandung.bill_splitter
 
 import android.os.Bundle
 
