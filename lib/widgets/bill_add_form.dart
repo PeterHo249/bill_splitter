@@ -9,19 +9,32 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AddingBillForm extends StatelessWidget {
-  const AddingBillForm({Key key}) : super(key: key);
+  final Payment bill;
+  final String tripDocId;
+  const AddingBillForm({
+    Key key,
+    this.bill,
+    this.tripDocId,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final billData = bill ?? Payment();
     return ChangeNotifierProvider<PaymentNotifier>(
-      builder: (context) => PaymentNotifier(Payment()),
-      child: AddingBillFormBody(),
+      builder: (context) => PaymentNotifier(billData),
+      child: AddingBillFormBody(
+        tripDocId: tripDocId,
+      ),
     );
   }
 }
 
 class AddingBillFormBody extends StatefulWidget {
-  const AddingBillFormBody({Key key}) : super(key: key);
+  final String tripDocId;
+  const AddingBillFormBody({
+    Key key,
+    this.tripDocId,
+  }) : super(key: key);
 
   @override
   _AddingBillFormBodyState createState() => _AddingBillFormBodyState();
@@ -150,17 +163,16 @@ class _AddingBillFormBodyState extends State<AddingBillFormBody> {
               control: Container(),
             ),
             ...bill.members
-                  .asMap()
-                  .map((index, member) => MapEntry(
-                      index,
-                      MemberTile(
-                        index: index,
-                        isNameModifiable: index == 0 ? false : true,
-                        isStateModifiable: index == 0 ? false : true,
-                      )))
-                  .values
-                  .toList(),
-            
+                .asMap()
+                .map((index, member) => MapEntry(
+                    index,
+                    MemberTile(
+                      index: index,
+                      isNameModifiable: index == 0 ? false : true,
+                      isStateModifiable: index == 0 ? false : true,
+                    )))
+                .values
+                .toList(),
           ],
         ),
       ),
@@ -214,6 +226,8 @@ class _AddingBillFormBodyState extends State<AddingBillFormBody> {
       form.save();
       var docPath = await DatabaseService.instance.writePayment(
         Provider.of<PaymentNotifier>(context).bill,
+        tripDocId: widget.tripDocId,
+        isSingle: widget.tripDocId == null,
       );
       Navigator.pushReplacement(
         context,
