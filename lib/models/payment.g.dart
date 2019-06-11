@@ -31,8 +31,13 @@ Map<String, dynamic> _$PaymentToJson(Payment instance) => <String, dynamic>{
 
 PayState _$PayStateFromJson(Map<String, dynamic> json) {
   return PayState(
-      name: json['name'] as String, isPayBack: json['isPayBack'] as bool);
+      id: json['id'] as String,
+      name: json['name'] as String,
+      isPayBack: json['isPayBack'] as bool);
 }
 
-Map<String, dynamic> _$PayStateToJson(PayState instance) =>
-    <String, dynamic>{'name': instance.name, 'isPayBack': instance.isPayBack};
+Map<String, dynamic> _$PayStateToJson(PayState instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'isPayBack': instance.isPayBack
+    };

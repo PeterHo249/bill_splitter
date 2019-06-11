@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:flutter/material.dart';
 
 part 'payment.g.dart';
 
@@ -70,13 +71,17 @@ class Payment {
 
 @JsonSerializable()
 class PayState {
+  String id;
   String name;
   bool isPayBack;
 
   PayState({
+    this.id,
     this.name,
     this.isPayBack = false,
-  });
+  }) {
+    id = id ?? UniqueKey().toString();
+  }
 
   factory PayState.fromJson(Map<String, dynamic> json) =>
       _$PayStateFromJson(json);

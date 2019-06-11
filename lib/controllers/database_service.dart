@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bill_splitter/models/payment.dart';
+import 'package:bill_splitter/models/trip_tracker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseService {
@@ -26,9 +27,29 @@ class DatabaseService {
   }
 
   Stream<List<PaymentDocument>> getPaymentListStream() {
-    return _db.collection(udid).snapshots().map(
+    return _db
+        .collection(udid)
+        .document('bills')
+        .collection('bills')
+        .snapshots()
+        .map(
           (snapshot) => _convertPaymentQueryDataToList(snapshot.documents),
         );
+  }
+
+  Stream<List<PaymentDocument>> getPaymentInTripListStream(String tripDocPath) {
+    return _db.document(tripDocPath).collection('bills').snapshots().map(
+          (snapshot) => _convertPaymentQueryDataToList(snapshot.documents),
+        );
+  }
+
+  Stream<List<TripTrackerDocument>> getTripList() {
+    return _db
+        .collection(udid)
+        .document('trips')
+        .collection('trips')
+        .snapshots()
+        .map((snapshot) => _convertTripQueryDataToList(snapshot.documents));
   }
   //****************** End read data section ******************
 
@@ -37,6 +58,7 @@ class DatabaseService {
     Payment payment, {
     String docId,
     String docPath,
+    String tripDocId,
     bool isSingle = true,
   }) async {
     var batch = _db.batch();
@@ -46,26 +68,20 @@ class DatabaseService {
     if (docPath != null) {
       docRef = _db.document(docPath);
     } else {
-      if (docId == null) {
-        if (isSingle) {
-          docRef = _db.collection(udid).document();
-        } else {
-          docRef = _db
-              .collection(udid)
-              .document('trips')
-              .collection('trips')
-              .document();
-        }
+      if (isSingle) {
+        docRef = _db
+            .collection(udid)
+            .document('bills')
+            .collection('bills')
+            .document(docId);
       } else {
-        if (isSingle) {
-          docRef = _db.collection(udid).document(docId);
-        } else {
-          docRef = _db
-              .collection(udid)
-              .document('trips')
-              .collection('trips')
-              .document(docId);
-        }
+        docRef = _db
+            .collection(udid)
+            .document('trips')
+            .collection('trips')
+            .document(tripDocId)
+            .collection('bills')
+            .document(docId);
       }
     }
 
@@ -81,6 +97,36 @@ class DatabaseService {
         .commit()
         .catchError((error) => print('=========> error: $error'));
 
+    return newDocPath;
+  }
+
+  Future<String> writeTrip(TripTracker trip,
+      {String docId, String docPath}) async {
+    var batch = _db.batch();
+
+    DocumentReference docRef;
+
+    if (docPath != null) {
+      docRef = _db.document(docPath);
+    } else {
+      docRef = _db
+          .collection(udid)
+          .document('trips')
+          .collection('trips')
+          .document(docId);
+    }
+
+    String newDocPath = docRef.path;
+    batch.setData(
+      docRef,
+      json.decode(
+        json.encode(trip),
+      ),
+    );
+
+    await batch
+        .commit()
+        .catchError((error) => print('=========> error: $error'));
     return newDocPath;
   }
 
@@ -106,25 +152,50 @@ class DatabaseService {
 
   //********************* Helper section **********************
   List<PaymentDocument> _convertPaymentQueryDataToList(
-      List<DocumentSnapshot> documents) {
+    List<DocumentSnapshot> documents,
+  ) {
     var result = List<PaymentDocument>();
 
     for (var document in documents) {
-      if (document.documentID != 'trips') {
-        result.add(
-          PaymentDocument(
-            path: document.reference.path,
-            data: Payment.fromJson(
-              json.decode(
-                json.encode(document.data),
-              ),
+      result.add(
+        PaymentDocument(
+          path: document.reference.path,
+          data: Payment.fromJson(
+            json.decode(
+              json.encode(document.data),
             ),
           ),
-        );
-      }
+        ),
+      );
     }
 
     result.sort((a, b) => b.data.date.compareTo(a.data.date));
+
+    return result;
+  }
+
+  List<TripTrackerDocument> _convertTripQueryDataToList(
+    List<DocumentSnapshot> documents,
+  ) {
+    var result = List<TripTrackerDocument>();
+
+    for (var document in documents) {
+      var data = TripTracker.fromJson(
+        json.decode(
+          json.encode(document.data),
+        ),
+      );
+
+      getPaymentInTripListStream(document.reference.path)
+          .listen((paymentList) => data.billDocuments = paymentList);
+
+      result.add(
+        TripTrackerDocument(
+          path: document.reference.path,
+          data: data,
+        ),
+      );
+    }
 
     return result;
   }
