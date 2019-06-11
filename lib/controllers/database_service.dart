@@ -100,8 +100,11 @@ class DatabaseService {
     return newDocPath;
   }
 
-  Future<String> writeTrip(TripTracker trip,
-      {String docId, String docPath}) async {
+  Future<String> writeTrip(
+    TripTracker trip, {
+    String docId,
+    String docPath,
+  }) async {
     var batch = _db.batch();
 
     DocumentReference docRef;

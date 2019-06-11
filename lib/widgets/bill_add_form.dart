@@ -149,8 +149,7 @@ class _AddingBillFormBodyState extends State<AddingBillFormBody> {
               title: 'Member List:',
               control: Container(),
             ),
-            Column(
-              children: bill.members
+            ...bill.members
                   .asMap()
                   .map((index, member) => MapEntry(
                       index,
@@ -161,7 +160,7 @@ class _AddingBillFormBodyState extends State<AddingBillFormBody> {
                       )))
                   .values
                   .toList(),
-            ),
+            
           ],
         ),
       ),
