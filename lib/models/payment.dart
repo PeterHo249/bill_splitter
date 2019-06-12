@@ -10,7 +10,6 @@ class Payment {
   double tipRate;
   List<PayState> members;
   DateTime date;
-  int memberCount;
 
   Payment({
     this.title,
@@ -18,16 +17,11 @@ class Payment {
     this.tipRate = 0.0,
     this.members,
     this.date,
-    this.memberCount = 1,
   }) {
     if (members == null) {
       members = [
         PayState(name: 'You', isPayBack: true),
       ];
-    } else {
-      if (memberCount != members.length) {
-        memberCount = members.length;
-      }
     }
 
     date = date ?? DateTime.now();
@@ -44,6 +38,7 @@ class Payment {
   String get billDate => '${date.day}/${date.month}/${date.year}';
   double get totalCost => cost * (1.0 + tipRate);
   double get paymentPartCost => totalCost / memberCount;
+  int get memberCount => members.length;
 
   void setTipRate(int rate) {
     if (rate < 0) {

@@ -30,7 +30,7 @@ class BillListBody extends StatelessWidget {
 
     if (billDocuments == null || billDocuments.length == 0) {
       return Warning(
-        icon: Icons.mood_bad,
+        icon: Icons.sentiment_dissatisfied,
         message: 'Opps! No bill to show.',
       );
     }
