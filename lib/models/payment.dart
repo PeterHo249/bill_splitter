@@ -7,18 +7,18 @@ part 'payment.g.dart';
 class Payment {
   String title;
   double cost;
-  int memberCount;
   double tipRate;
   List<PayState> members;
   DateTime date;
+  int memberCount;
 
   Payment({
     this.title,
     this.cost = 0,
-    this.memberCount = 1,
     this.tipRate = 0.0,
     this.members,
     this.date,
+    this.memberCount = 1,
   }) {
     if (members == null) {
       members = [
@@ -26,7 +26,7 @@ class Payment {
       ];
     } else {
       if (memberCount != members.length) {
-        throw Exception("Invalid Argument");
+        memberCount = members.length;
       }
     }
 

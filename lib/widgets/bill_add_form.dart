@@ -162,17 +162,19 @@ class _AddingBillFormBodyState extends State<AddingBillFormBody> {
               title: 'Member List:',
               control: Container(),
             ),
-            ...bill.members
-                .asMap()
-                .map((index, member) => MapEntry(
-                    index,
-                    MemberTile(
-                      index: index,
-                      isNameModifiable: index == 0 ? false : true,
-                      isStateModifiable: index == 0 ? false : true,
-                    )))
-                .values
-                .toList(),
+            Column(
+              children: bill.members
+                  .asMap()
+                  .map((index, member) => MapEntry(
+                      index,
+                      MemberTile(
+                        index: index,
+                        isNameModifiable: index == 0 ? false : true,
+                        isStateModifiable: index == 0 ? false : true,
+                      )))
+                  .values
+                  .toList(),
+            ),
           ],
         ),
       ),

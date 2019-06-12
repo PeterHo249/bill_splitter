@@ -1,6 +1,11 @@
+import 'package:bill_splitter/controllers/database_service.dart';
 import 'package:bill_splitter/controllers/trip_tracker_notifier.dart';
 import 'package:bill_splitter/models/trip_tracker.dart';
+import 'package:bill_splitter/widgets/custom_widgets/amount_picker.dart';
+import 'package:bill_splitter/widgets/custom_widgets/trip_member_tile.dart';
+import 'package:bill_splitter/widgets/trip_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:provider/provider.dart';
 
 class AddingTripTrackerForm extends StatelessWidget {
@@ -51,6 +56,12 @@ class _AddingTripTrackerFormBodyState extends State<AddingTripTrackerFormBody> {
   Widget _buildAppBar(BuildContext context) {
     return AppBar(
       title: Text('Add new trip'),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.check),
+          onPressed: onSavePressed,
+        ),
+      ],
     );
   }
 
@@ -70,20 +81,70 @@ class _AddingTripTrackerFormBodyState extends State<AddingTripTrackerFormBody> {
           children: <Widget>[
             _buildFormRow(
               title: 'Name:',
-              control: Container(),
+              control: TextFormField(
+                initialValue: tripTracker.name,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Name is required.';
+                  }
+
+                  return null;
+                },
+                onSaved: (value) => tripTrackerNotifier.setName(value),
+                onFieldSubmitted: (value) => tripTrackerNotifier.setName(value),
+              ),
             ),
             _buildFormRow(
               title: 'Start date:',
-              control: Container(),
+              control: Container(
+                width: MediaQuery.of(context).size.width / 2.0,
+                child: InkWell(
+                  onTap: () {
+                    DatePicker.showDatePicker(
+                      context,
+                      showTitleActions: true,
+                      minTime: DateTime.now(),
+                      maxTime: DateTime.now().add(
+                        Duration(days: 365),
+                      ),
+                      currentTime: tripTracker.date,
+                      onConfirm: (value) => tripTrackerNotifier.setDate(value),
+                    );
+                  },
+                  child: Text(
+                    tripTracker.tripDate,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                    ),
+                  ),
+                ),
+              ),
             ),
             _buildFormRow(
               title: 'Member count:',
-              control: Container(),
+              control: AmountPicker(
+                width: MediaQuery.of(context).size.width / 2.0 - 20.0,
+                initialValue: tripTracker.memberCount,
+                onAddButtonPressed: (value) => tripTrackerNotifier.addMember(),
+                onRemoveButtonPressed: (value) =>
+                    tripTrackerNotifier.removeMember(),
+              ),
             ),
             _buildFormRow(
               title: 'Member list:',
               control: Container(),
             ),
+            ...tripTracker.members
+                .asMap()
+                .map((index, member) => MapEntry(
+                      index,
+                      TripMemberTile(
+                        index: index,
+                        isNameModifiable: index == 0 ? false : true,
+                      ),
+                    ))
+                .values
+                .toList(),
           ],
         ),
       ),
@@ -128,5 +189,28 @@ class _AddingTripTrackerFormBodyState extends State<AddingTripTrackerFormBody> {
         ),
       ),
     );
+  }
+
+  void onSavePressed() async {
+    final form = _formKey.currentState;
+
+    if (form.validate()) {
+      form.save();
+      var docPath = await DatabaseService.instance.writeTrip(
+        Provider.of<TripTrackerNotifier>(context).tripTracker,
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TripDetail(
+                tripPath: docPath,
+              ),
+        ),
+      );
+    } else {
+      setState(() {
+        autoValidate = true;
+      });
+    }
   }
 }

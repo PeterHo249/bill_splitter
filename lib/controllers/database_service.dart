@@ -49,7 +49,13 @@ class DatabaseService {
         .document('trips')
         .collection('trips')
         .snapshots()
-        .map((snapshot) => _convertTripQueryDataToList(snapshot.documents));
+        .map((snapshot) => _convertTripsQueryDataToList(snapshot.documents));
+  }
+
+  Stream<TripTrackerDocument> getTrip(String docPath) {
+    return _db.document(docPath).snapshots().map(
+          (snapshot) => _convertTripQueryData(snapshot),
+        );
   }
   //****************** End read data section ******************
 
@@ -177,30 +183,34 @@ class DatabaseService {
     return result;
   }
 
-  List<TripTrackerDocument> _convertTripQueryDataToList(
+  List<TripTrackerDocument> _convertTripsQueryDataToList(
     List<DocumentSnapshot> documents,
   ) {
     var result = List<TripTrackerDocument>();
 
     for (var document in documents) {
-      var data = TripTracker.fromJson(
-        json.decode(
-          json.encode(document.data),
-        ),
-      );
-
-      getPaymentInTripListStream(document.reference.path)
-          .listen((paymentList) => data.billDocuments = paymentList);
-
       result.add(
-        TripTrackerDocument(
-          path: document.reference.path,
-          data: data,
-        ),
+        _convertTripQueryData(document),
       );
     }
 
     return result;
+  }
+
+  TripTrackerDocument _convertTripQueryData(DocumentSnapshot document) {
+    var data = TripTracker.fromJson(
+      json.decode(
+        json.encode(document.data),
+      ),
+    );
+
+    getPaymentInTripListStream(document.reference.path)
+        .listen((paymentList) => data.billDocuments = paymentList);
+
+    return TripTrackerDocument(
+      path: document.reference.path,
+      data: data,
+    );
   }
   //******************* End helper section ********************
 }

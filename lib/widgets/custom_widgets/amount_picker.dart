@@ -10,8 +10,8 @@ class AmountPicker extends StatefulWidget {
   final double iconSize;
   Color backgroundColor;
   Color foregroundColor;
-  int minValue;
-  int maxValue;
+  final int minValue;
+  final int maxValue;
 
   AmountPicker({
     Key key,
@@ -53,6 +53,12 @@ class _AmountPickerState extends State<AmountPicker> {
     valueController = TextEditingController();
     value = widget.initialValue;
     valueController.text = value.toString();
+  }
+
+  @override
+  void dispose() {
+    valueController.dispose();
+    super.dispose();
   }
 
   @override

@@ -12,6 +12,7 @@ class TripTrackerNotifier with ChangeNotifier {
 
   void setDate(DateTime date) {
     _tripTracker.date = date;
+    notifyListeners();
   }
 
   void setName(String name) {
@@ -26,5 +27,33 @@ class TripTrackerNotifier with ChangeNotifier {
   void setBills(List<PaymentDocument> bills) {
     _tripTracker.billDocuments = bills;
     notifyListeners();
+  }
+
+  void addMember() {
+    _tripTracker.members.add(
+      PayState(
+        name: 'Member ${_tripTracker.memberCount - 1}',
+        isPayBack: false,
+      ),
+    );
+    notifyListeners();
+  }
+
+  void removeMember() {
+    _tripTracker.members.removeLast();
+    notifyListeners();
+  }
+
+  void removeMemberAt(int index) {
+    if (index <= 0 || index >= _tripTracker.memberCount) {
+      return;
+    } else {
+      _tripTracker.members.removeAt(index);
+      notifyListeners();
+    }
+  }
+
+  void setMemberName(String value, int index) {
+    _tripTracker.members[index].name = value;
   }
 }

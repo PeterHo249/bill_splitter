@@ -10,7 +10,6 @@ Payment _$PaymentFromJson(Map<String, dynamic> json) {
   return Payment(
       title: json['title'] as String,
       cost: (json['cost'] as num)?.toDouble(),
-      memberCount: json['memberCount'] as int,
       tipRate: (json['tipRate'] as num)?.toDouble(),
       members: (json['members'] as List)
           ?.map((e) =>
@@ -23,7 +22,6 @@ Payment _$PaymentFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$PaymentToJson(Payment instance) => <String, dynamic>{
       'title': instance.title,
       'cost': instance.cost,
-      'memberCount': instance.memberCount,
       'tipRate': instance.tipRate,
       'members': instance.members,
       'date': instance.date?.toIso8601String()
