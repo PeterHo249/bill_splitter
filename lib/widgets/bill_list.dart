@@ -2,6 +2,7 @@ import 'package:bill_splitter/controllers/database_service.dart';
 import 'package:bill_splitter/models/payment.dart';
 import 'package:bill_splitter/utils/constants/bill_indicator_constant.dart';
 import 'package:bill_splitter/widgets/bill_detail.dart';
+import 'package:bill_splitter/widgets/custom_widgets/icon_with_text_row.dart';
 import 'package:bill_splitter/widgets/custom_widgets/warning.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -36,11 +37,9 @@ class BillListBody extends StatelessWidget {
     }
     return ListView.builder(
       itemCount: billDocuments.length,
-      itemBuilder: (context, index) {
-        return BillListCell(
-          billDocument: billDocuments[index],
-        );
-      },
+      itemBuilder: (context, index) => BillListCell(
+            billDocument: billDocuments[index],
+          ),
     );
   }
 }
@@ -136,7 +135,8 @@ class BillListCell extends StatelessWidget {
                   IconWithTextRow(
                     icon: Icons.timelapse,
                     iconColor: Colors.green,
-                    text: '${billDocument.data.paymentPartCost.toStringAsFixed(2)}/person',
+                    text:
+                        '${billDocument.data.paymentPartCost.toStringAsFixed(2)}/person',
                   ),
                 ],
               ),
@@ -147,43 +147,6 @@ class BillListCell extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class IconWithTextRow extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String text;
-  const IconWithTextRow({
-    Key key,
-    this.icon,
-    this.iconColor,
-    this.text,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Icon(
-            icon,
-            color: iconColor,
-            size: 24.0,
-          ),
-        ),
-        Text(
-          text,
-          style: TextStyle(
-            fontSize: 18.0,
-          ),
-        ),
-      ],
     );
   }
 }

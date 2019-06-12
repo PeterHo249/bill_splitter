@@ -150,6 +150,22 @@ class DatabaseService {
         .catchError((error) => print('=========> error: $error'));
   }
 
+  deleteTrip(String docPath) async {
+    var batch = _db.batch();
+
+    var docRef = _db.document(docPath);
+    _db.document(docPath).collection('bills').getDocuments().then((snapshot) {
+      for (var document in snapshot.documents) {
+        batch.delete(document.reference);
+      }
+    });
+    batch.delete(docRef);
+
+    await batch
+        .commit()
+        .catchError((error) => print('=========> error: $error'));
+  }
+
   changePaymentState(int index, PaymentDocument billDocument) {
     var isNeedUpdate = billDocument.data.changePaymentStateOfMember(index);
 
