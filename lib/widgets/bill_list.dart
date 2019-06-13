@@ -129,7 +129,7 @@ class BillListCell extends StatelessWidget {
                   ),
                   IconWithTextRow(
                     icon: Icons.people,
-                    iconColor: Colors.yellow,
+                    iconColor: Colors.amber,
                     text: billDocument.data.memberCount.toString(),
                   ),
                   IconWithTextRow(

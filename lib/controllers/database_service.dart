@@ -37,7 +37,7 @@ class DatabaseService {
         );
   }
 
-  Stream<List<PaymentDocument>> getPaymentInTripListStream(String tripDocPath) {
+  Stream<List<PaymentDocument>> getPaymentListInTripStream(String tripDocPath) {
     return _db.document(tripDocPath).collection('bills').snapshots().map(
           (snapshot) => _convertPaymentQueryDataToList(snapshot.documents),
         );
@@ -49,7 +49,9 @@ class DatabaseService {
         .document('trips')
         .collection('trips')
         .snapshots()
-        .map((snapshot) => _convertTripsQueryDataToList(snapshot.documents));
+        .map(
+          (snapshot) => _convertTripsQueryDataToList(snapshot.documents),
+        );
   }
 
   Stream<TripTrackerDocument> getTrip(String docPath) {
@@ -64,7 +66,7 @@ class DatabaseService {
     Payment payment, {
     String docId,
     String docPath,
-    String tripDocId,
+    String tripDocPath,
     bool isSingle = true,
   }) async {
     var batch = _db.batch();
@@ -81,13 +83,7 @@ class DatabaseService {
             .collection('bills')
             .document(docId);
       } else {
-        docRef = _db
-            .collection(udid)
-            .document('trips')
-            .collection('trips')
-            .document(tripDocId)
-            .collection('bills')
-            .document(docId);
+        docRef = _db.document(tripDocPath).collection('bills').document(docId);
       }
     }
 
@@ -181,6 +177,10 @@ class DatabaseService {
   ) {
     var result = List<PaymentDocument>();
 
+    if (documents == null || documents.isEmpty) {
+      return result;
+    }
+
     for (var document in documents) {
       result.add(
         PaymentDocument(
@@ -219,9 +219,6 @@ class DatabaseService {
         json.encode(document.data),
       ),
     );
-
-    getPaymentInTripListStream(document.reference.path)
-        .listen((paymentList) => data.billDocuments = paymentList);
 
     return TripTrackerDocument(
       path: document.reference.path,

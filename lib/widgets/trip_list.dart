@@ -117,20 +117,10 @@ class TripListCell extends StatelessWidget {
                   ),
                 ),
               ),
-              subtitle: Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                children: <Widget>[
-                  IconWithTextRow(
-                    icon: Icons.attach_money,
-                    iconColor: Colors.red,
-                    text: tripDocument.data.totalCost.toStringAsFixed(2),
-                  ),
-                  IconWithTextRow(
-                    icon: Icons.people,
-                    iconColor: Colors.yellow,
-                    text: tripDocument.data.memberCount.toString(),
-                  ),
-                ],
+              subtitle: IconWithTextRow(
+                icon: Icons.people,
+                iconColor: Colors.amber,
+                text: tripDocument.data.memberCount.toString(),
               ),
             ),
             Divider(

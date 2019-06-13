@@ -10,11 +10,11 @@ import 'package:provider/provider.dart';
 
 class AddingBillForm extends StatelessWidget {
   final Payment bill;
-  final String tripDocId;
+  final String tripDocPath;
   const AddingBillForm({
     Key key,
     this.bill,
-    this.tripDocId,
+    this.tripDocPath,
   }) : super(key: key);
 
   @override
@@ -23,17 +23,17 @@ class AddingBillForm extends StatelessWidget {
     return ChangeNotifierProvider<PaymentNotifier>(
       builder: (context) => PaymentNotifier(billData),
       child: AddingBillFormBody(
-        tripDocId: tripDocId,
+        tripDocPath: tripDocPath,
       ),
     );
   }
 }
 
 class AddingBillFormBody extends StatefulWidget {
-  final String tripDocId;
+  final String tripDocPath;
   const AddingBillFormBody({
     Key key,
-    this.tripDocId,
+    this.tripDocPath,
   }) : super(key: key);
 
   @override
@@ -228,8 +228,8 @@ class _AddingBillFormBodyState extends State<AddingBillFormBody> {
       form.save();
       var docPath = await DatabaseService.instance.writePayment(
         Provider.of<PaymentNotifier>(context).bill,
-        tripDocId: widget.tripDocId,
-        isSingle: widget.tripDocId == null,
+        tripDocPath: widget.tripDocPath,
+        isSingle: widget.tripDocPath == null,
       );
       Navigator.pushReplacement(
         context,
